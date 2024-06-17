@@ -1,0 +1,20 @@
+[package]
+name = "repeat"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.repeat-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.82"
+clap = { version = "4.5.4", features = ["derive"] }
+term_size = "0.3.2"
+colored = "2.1.0"
+
+[profile.release]
+strip = true      # Automatically strip symbols from the binary
+opt-level = "z"   # Optimize for size
+lto = true        # Link time optimizatin, removes dead code
+codegen-units = 1 # Allow for maximum size reduction optimizations
+# panic = "abort"   # Don't print stack trace on panic
+# Set RUSTFLAGS="-Zlocation-detail=none" to remove file, line and column information
