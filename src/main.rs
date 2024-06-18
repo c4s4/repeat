@@ -1,13 +1,14 @@
 use anyhow::Result;
 use clap::Parser;
+use colored::Colorize;
 use std::env;
 use std::process::Command;
 use term_size;
-use colored::Colorize;
 
 const DEFAULT_SHELL_UNIX: &str = "sh";
 const DEFAULT_SHELL_WINDOWS: &str = "cmd";
 const DEFAULT_TERM_WIDTH: usize = 80;
+const DEFAULT_CHARACTER: &str = "=";
 
 /// Repeat a command a number of times
 #[derive(Parser)]
@@ -21,22 +22,37 @@ struct Cli {
     #[clap(short, long)]
     black: bool,
     /// Title character
-    #[clap(short, long, default_value = "=")]
-    character: char,
+    #[clap(short, long, default_value = DEFAULT_CHARACTER)]
+    character: String,
+    /// Shell to use
+    #[clap(short, long)]
+    shell: Option<String>,
 }
 
 fn main() {
     // parse command line arguments
     let args = Cli::parse();
     // run function
-    if let Err(e) = run(args.number, args.command, args.black, &args.character.to_string()) {
+    if let Err(e) = run(
+        args.number,
+        args.command,
+        args.black,
+        &args.character,
+        args.shell,
+    ) {
         eprintln!("ERROR {:#}", e);
         std::process::exit(1);
     }
 }
 
 /// Describe function here
-fn run(number: u32, command: Vec<String>, black: bool, character: &str) -> Result<()> {
+fn run(
+    number: u32,
+    command: Vec<String>,
+    black: bool,
+    character: &str,
+    shell: Option<String>,
+) -> Result<()> {
     // print arguments
     println!("Run {} times '{}'", number, command.join(" "));
     // run command number times
@@ -45,15 +61,23 @@ fn run(number: u32, command: Vec<String>, black: bool, character: &str) -> Resul
         if let Some((w, _)) = term_size::dimensions() {
             width = w;
         } else {
-            eprintln!("Cannot get terminal width, using default {}", DEFAULT_TERM_WIDTH);
+            eprintln!(
+                "Cannot get terminal width, using default {}",
+                DEFAULT_TERM_WIDTH
+            );
         }
-        let message = format!("{} {} {}", str::repeat(character, 2), i, str::repeat(character, width - (i.to_string().len() + 4)));
+        let message = format!(
+            "{} {} {}",
+            str::repeat(character, 2),
+            i,
+            str::repeat(character, width - (i.to_string().len() + 4))
+        );
         if black {
             println!("{}", message);
         } else {
             println!("{}", message.yellow().bold());
         }
-        let status = run_command(command.clone(), None)?;
+        let status = run_command(command.clone(), shell.clone())?;
         if status != 0 {
             anyhow::bail!("Command failed with status {}", status);
         }

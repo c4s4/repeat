@@ -27,7 +27,7 @@ Otherwise, you can download latest binary archive at <https://github.com/c4s4/re
 ## Usage
 
 ```bash
-repeat [--version|-V] [--help|-h] [--black|-b] [--character|-c =] n command [args...]
+repeat [--version|-V] [--help|-h] [--black|-b] [--character|-c C] [--shell|-s sh] n command [args...]
 ```
 
 Where:
@@ -38,5 +38,6 @@ Where:
 - `--help` or `-h` to print help and exit
 - `--black` or `-b` to disable color output
 - `--character` or `-c` to specify the character to repeat (default is `=`)
+- `--shell` or `-s` to specify the shell to use (default is `sh` on Unix and `cmd` on Windows)
 
 *Enjoy!*
