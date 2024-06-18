@@ -4,7 +4,7 @@ extends: rust
 default: [lint, run]
 
 properties:
-  ARGS: ['10', 'ls']
+  ARGS: ['3', 'date']
   # to show output: ['--', '--show-output']
   # to run tests in one thread: ['--', '--test-threads=1']
   # to run #[ignore]d tests: ['--', '--ignored'] or ['--', '--include-ignored']
